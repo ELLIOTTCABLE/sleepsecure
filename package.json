@@ -1,0 +1,33 @@
+{
+  "author": "ELLIOTTCABLE (http://ell.io/tt)",
+  "name": "sleepsecure",
+  "version": "0.0.1",
+  "description": "A lightweight scraper for SleepCycle's online SleepSecure data.",
+  "main": "index.js",
+  "license": "ISC",
+  "scripts": {
+    "build": "babel *.js --out-dir '.'",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "babel": {
+    "presets": [
+      "env"
+    ]
+  },
+  "keywords": [
+    "scraper",
+    "crawler",
+    "client",
+    "health",
+    "sleep",
+    "sleepcycle"
+  ],
+  "dependencies": {
+    "bhttp": "^1.2.4",
+    "cheerio": "^1.0.0-rc.2"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.6.1"
+  }
+}
