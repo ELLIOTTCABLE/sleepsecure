@@ -12,7 +12,8 @@ console.log(user_agent)
 
 const login_info = {
    "username": "sleepcycle.com@elliottcable.com",
-   "password": "coulomb-nosed-oarlock-identify-houston-triple-fusion"
+   "password": "coulomb-nosed-oarlock-identify-houston-triple-fusion", // fuck me oops
+   "Field": "First Choice" // "Keep me signed in", not that I'm sure it has any effect.
 }
 
 
