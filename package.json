@@ -1,7 +1,7 @@
 {
   "author": "ELLIOTTCABLE (http://ell.io/tt)",
   "name": "sleepsecure",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A lightweight scraper for SleepCycle's online SleepSecure data.",
   "main": "index.js",
   "license": "0BSD",
