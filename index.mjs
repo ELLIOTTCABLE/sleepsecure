@@ -109,8 +109,41 @@ class SleepSecureSession {
       })
    }
 
-   // A wrapper to make requests to SleepSecure against this Session, handling rejection of the
-   // stored cookie by re-logging-in.
+   // A wrapper around `bhttp.request()` to make requests to SleepSecure against this Session,
+   // handling rejection of the stored cookie by re-logging-in. Defaults to GET.
+   request(path, opts){ const that = this
+      if (null == opts) opts = {}
+      if (null == opts.method) opts.method = "get"
+
+      return this._session.request("https://s.sleepcycle.com" + path, opts)
+      .then(function(response){
+
+         // SleepSecure handles an expired/bad login cookie by redirecting to `/site/login`:
+         // XXX: ... does this clear the cookie? o_O
+         if (response.redirectHistory && response.redirectHistory[0] &&
+             response.redirectHistory[0].headers['location'] ===
+               "https://s.sleepcycle.com/site/login") {
+
+            if (that._rerequests >= 5)
+               throw new Error("SleepCycle repeatedly rejecting login tokens. Aborting.")
+
+            debug("Received 302 FOUND, indicating expired/invalid login token — re-logging-in")
+            that._rerequests = (that._rerequests || 0) + 1
+
+            return that.login().then(function(succeeded){
+               if (!succeeded) {
+                  throw new Error("SleepCycle rejected the given username/password.")
+               } else {
+                  return that.request(path, opts)
+               }
+            })
+
+         } else {
+            debug(`Received ${response.statusCode} "${response.statusMessage}" from ${path}`)
+            return response
+         }
+      })
+   }
 
    // FIXME: Reset the session on session-denied errors
    // case http_status.FOUND: // 302 FOUND, indicates a bad login cookie
@@ -119,8 +152,7 @@ class SleepSecureSession {
 
 // ### Make request ...
 new SleepSecureSession('this_isnt_a_real_account', 'fail')
-.login().then(function(succeeded){ assert(succeeded) })
-.then(function(_){ return cookie_jar.get("https://s.sleepcycle.com/site/comp/calendar") })
+.request("/site/comp/calendar")
 
 .then(function(response){
    const $ = cheerio.load(response.body)
