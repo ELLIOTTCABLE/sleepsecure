@@ -81,7 +81,7 @@ class SleepSecureSession {
          followRedirects: false
       })
       .then(function(response){
-         debug(`Received ${response.statusCode} "${http_status[response.statusCode]}" from /site/login`)
+         debug(`Received ${response.statusCode} "${response.statusMessage}" from /site/login`)
          switch (response.statusCode) {
 
             // Unintuitively, SleepSecure returns HTTP 200: OK if your login information is
@@ -101,7 +101,7 @@ class SleepSecureSession {
 
             default:
                const e = new Error(`SleepSecure returned an unexpected HTTP status: ${
-                  response.statusCode} "${http_status[response.statusCode]}"`)
+                  response.statusCode} "${response.statusMessage}"`)
                e.statusCode = response.statusCode
                throw e
          }
