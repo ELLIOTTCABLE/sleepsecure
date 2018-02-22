@@ -24,7 +24,13 @@
   ],
   "dependencies": {
     "bhttp": "^1.2.4",
-    "cheerio": "^1.0.0-rc.2"
+    "cheerio": "^1.0.0-rc.2",
+    "debug": "^3.1.0",
+    "file-cookie-store": "^0.2.1",
+    "http-status": "^1.0.1",
+    "osenv": "^0.1.5",
+    "tough-cookie": "^2.3.3",
+    "xdg-basedir": "^3.0.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
