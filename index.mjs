@@ -172,10 +172,6 @@ class SleepSecureSession {
          }
       })
    }
-
-   // FIXME: Reset the session on session-denied errors
-   // case http_status.FOUND: // 302 FOUND, indicates a bad login cookie
-   //    assert(response.headers['location'] === "https://s.sleepcycle.com/site/login")
 }
 
 export default SleepSecureSession
