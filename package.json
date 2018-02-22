@@ -7,7 +7,7 @@
   "main": "index.js",
   "license": "0BSD",
   "scripts": {
-    "build": "babel *.js --out-dir '.'",
+    "prepare": "babel *.mjs --out-dir '.'",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "babel": {
