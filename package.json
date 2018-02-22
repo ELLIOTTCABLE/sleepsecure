@@ -27,6 +27,7 @@
     "cheerio": "^1.0.0-rc.2",
     "debug": "^3.1.0",
     "file-cookie-store": "^0.2.1",
+    "fs-extra": "^5.0.0",
     "http-status": "^1.0.1",
     "osenv": "^0.1.5",
     "tough-cookie": "^2.3.3",

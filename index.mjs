@@ -11,6 +11,7 @@ import bhttp from 'bhttp'
 import toughCookie from 'tough-cookie'
 import FileStore from 'file-cookie-store'
 
+import fs from 'fs-extra'
 import os from 'os'
 import path from 'path'
 import osenv from 'osenv'
@@ -34,7 +35,7 @@ function getCacheDir(){
 }
 
 function getDefaultCookieStorePath(){
-   return path.join(basedir.cache || getCacheDir(), 'sleepsecure', 'cookies.txt')
+   return path.join(basedir.cache || getCacheDir(), 'sleepsecure') + path.sep
 }
 
 // Helper-function, called in an `assert`, allowing the function to be compiled-away by `unassert`
@@ -61,19 +62,41 @@ class SleepSecureSession {
       this.password = password
 
       this._cookie_store_path = opts.cookie_store_path || getDefaultCookieStorePath()
+      if (this._cookie_store_path[this._cookie_store_path.length - 1] === path.sep)
+         this._cookie_store_path += 'cookies.txt'
+
       debug(`Using '${this._cookie_store_path}' to store cookies`)
 
       this._cookies = new toughCookie.CookieJar(new FileStore(this._cookie_store_path))
       this._session = SleepSecureSession.createHTTPSession(this._cookies)
    }
 
+   init(opts){ const that = this
+      if (null == opts) opts = {}
+
+      const cookie_store_dir = path.dirname(this._cookie_store_path)
+
+      debug(`Creating '${cookie_store_dir}'`)
+      return fs.ensureDir(cookie_store_dir).then(function(){
+         that._initialized = true
+
+         if (opts.do_login !== false)
+            return that.login()
+      })
+   }
+
    // Logs the receiver Session object into SleepSecure. Returns a boolean `Promise`: `true` if the
    // login was successful; `false` if the password was incorrect.
-   login(){
+   login(){ const that = this
       const login_info = {
          "username": this.username,
          "password": this.password,
          "Field": "First Choice" // "Keep me signed in", not that I'm sure it has any effect.
+      }
+
+      if (!this._initialized) {
+         debug(".login() called without .init() — initializing ...")
+         return this.init({do_login: false}).then(function(){ return that.login() })
       }
 
       debug('POSTing login-info')
@@ -114,6 +137,11 @@ class SleepSecureSession {
    request(path, opts){ const that = this
       if (null == opts) opts = {}
       if (null == opts.method) opts.method = "get"
+
+      if (!this._initialized) {
+         debug(".request() called without .init() — initializing ...")
+         return this.init({do_login: false}).then(function(){ return that.request(path, opts) })
+      }
 
       return this._session.request("https://s.sleepcycle.com" + path, opts)
       .then(function(response){
