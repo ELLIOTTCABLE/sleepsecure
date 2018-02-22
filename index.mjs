@@ -178,16 +178,4 @@ class SleepSecureSession {
    //    assert(response.headers['location'] === "https://s.sleepcycle.com/site/login")
 }
 
-// ### Make request ...
-new SleepSecureSession('this_isnt_a_real_account', 'fail')
-.request("/site/comp/calendar")
-
-.then(function(response){
-   const $ = cheerio.load(response.body)
-   const session_links = $('table tr:nth-child(1) .description a')
-   assert.strictEqual(session_links.length, 1)
-   assert.strictEqual(typeof session_links[0].attribs.href, 'string')
-
-   const session_id = session_regex.exec(session_links[0].attribs.href)[1]
-   console.log("Latest sleep-session ID:", session_id)
-})
+export default SleepSecureSession
